@@ -1,0 +1,16 @@
+services:
+  api: 
+    build: ./api
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    env_file:
+      - /Users/aanchal/Documents/Repos-Personal/URL-Shortener-Using-GO/api/.env # This loads your environment variables for the API service
+
+  db:
+    build: ./db
+    ports:
+      - "1234:6379"  # Map port 1234 on the host to 6379 in the container
+    volumes:
+      - .data:/data  # Volume to persist Redis data

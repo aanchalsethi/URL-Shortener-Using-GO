@@ -1,17 +1,31 @@
 package helpers
 
-import "time"
+import (
+	"os"
+	"strings"
+)
 
-type request struct {
-	URL         string        `json:"url"`
-	CustomShort string        `json:"custom_short"`
-	Expiry      time.Duration `json:"expiry"`
+func EnforceHTTP(url string) string {
+	if url[:4] != "http" {
+		return "http://" + url
+	}
+
+	return url
 }
 
-type response struct {
-	URL             string        `json:"url"`
-	CustomShort     string        `json:"custom_short"`
-	Expiry          time.Duration `json:"expiry"`
-	XRateRemaining  int           `json:"x_rate_remaining"`
-	XRateLimitReset time.Duration `json:"x_rate_limit_reset"`
+func RemoveDomainError(url string) bool {
+	if url == os.Getenv("DOMAIN") {
+		return false
+	}
+
+	newURL := strings.Replace(url, "http://", "", 1)
+	newURL = strings.Replace(url, "https://", "", 1)
+	newURL = strings.Replace(url, "www.", "", 1)
+	newURL = strings.Split(url, "/")[0]
+
+	if newURL == os.Getenv("DOMAIN") {
+		return false
+	}
+
+	return true
 }
